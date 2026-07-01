@@ -421,6 +421,93 @@
       }
     };
 
+    const categoryKeywords = {
+      dinosaur: ["공룡", "화석", "매머드", "고생물"],
+      animal: ["곤충", "개미", "나비", "벌", "거미", "동물", "새", "물고기", "강아지", "고양이", "사자", "호랑이", "코끼리", "펭귄", "돌고래", "상어"],
+      vehicle: ["자동차", "전기차", "비행기", "기차", "지하철", "로봇", "트럭", "오토바이", "자전거", "버스", "헬리콥터", "드론", "배"],
+      sports: ["하키", "축구", "야구", "농구", "배구", "태권도", "수영", "육상", "테니스", "골프", "스케이트", "스키", "마라톤"],
+      space: ["우주", "행성", "로켓", "달", "태양", "은하", "우주선", "천체", "별"],
+      weather: ["날씨", "구름", "태풍", "계절", "무지개", "화산", "지진", "바람"],
+      food: ["음식", "요리", "과일", "채소", "빵", "과자", "음료", "김치", "피자", "치킨"],
+      story: ["공주", "히어로", "마법", "요정", "괴물", "만화", "왕자", "용", "기사"]
+    };
+
+    const categoryOrder = ["dinosaur", "animal", "vehicle", "sports", "space", "weather", "food", "story"];
+
+    function detectCategory(interest) {
+      for (const key of categoryOrder) {
+        if (categoryKeywords[key].some(keyword => interest.includes(keyword))) {
+          return key;
+        }
+      }
+      return null;
+    }
+
+    const categoryNextBuilders = {
+      dinosaur: interest => [
+        makeNext(`${interest}와 고생물학`, `${interest}가 살던 아주 오래전 지구를 탐구합니다.`, `${interest}가 살았던 시대를 그림 연대표로 그려봅니다.`),
+        makeNext("화석은 어떻게 만들어질까?", `${interest}의 흔적이 화석으로 남는 과정을 알아봅니다.`, "점토나 밀가루 반죽으로 화석 만들기 놀이를 해봅니다."),
+        makeNext(`${interest}가 살던 시대`, `${interest}가 살았던 시대의 환경과 다른 생물을 알아봅니다.`, "그 시대의 식물과 동물을 함께 그려봅니다."),
+        makeNext(`나만의 ${interest} 도감 만들기`, `${interest}에 대해 알게 된 것을 도감으로 정리합니다.`, `${interest}의 특징과 그림을 담은 미니 도감을 만들어봅니다.`)
+      ],
+      animal: interest => [
+        makeNext(`${interest}의 자연 탐험`, `${interest}가 사는 자연 환경을 탐험해봅니다.`, `${interest}가 사는 곳을 사진이나 그림으로 찾아봅니다.`),
+        makeNext(`${interest}는 어디에 살까?`, `${interest}의 서식지와 생활 방식을 알아봅니다.`, `${interest}가 사는 장소를 지도나 그림으로 표현해봅니다.`),
+        makeNext(`${interest}와 먹이사슬`, `${interest}가 무엇을 먹고, 누구와 관계를 맺는지 알아봅니다.`, `먹이사슬표를 그리며 ${interest}의 자리를 찾아봅니다.`),
+        makeNext(`${interest} 지키기`, `${interest}를 보호하기 위해 우리가 할 수 있는 일을 생각해봅니다.`, `${interest}를 지키는 포스터나 캠페인을 만들어봅니다.`)
+      ],
+      vehicle: interest => [
+        makeNext(`${interest}가 다니는 미래도시`, `${interest}가 많아지면 도시와 거리는 어떻게 달라질지 상상해봅니다.`, "충전소, 도로, 신호등이 있는 미래도시를 그림으로 그려봅니다."),
+        makeNext(`${interest}는 어떻게 움직일까?`, `${interest} 안에 숨어 있는 힘과 원리를 알아봅니다.`, "바퀴, 엔진, 모터 같은 부분을 사진이나 그림으로 찾아봅니다."),
+        makeNext(`${interest}와 에너지`, `${interest}가 어떤 힘으로 움직이는지, 에너지를 어떻게 쓰는지 살펴봅니다.`, "기름, 전기, 배터리 같은 에너지원을 비교해봅니다."),
+        makeNext(`나만의 ${interest} 디자인하기`, `${interest}를 새롭게 디자인하며 상상력을 펼쳐봅니다.`, `색, 모양, 기능을 정해 나만의 ${interest}를 그려봅니다.`)
+      ],
+      sports: interest => [
+        makeNext(`${interest}와 스포츠 과학`, `${interest} 안에 숨어 있는 힘, 속도, 균형의 과학을 알아봅니다.`, `${interest} 동작을 몸으로 따라 하며 힘의 방향을 느껴봅니다.`),
+        makeNext("몸은 어떻게 움직일까?", `${interest}를 할 때 우리 몸의 근육과 균형이 어떻게 쓰이는지 알아봅니다.`, `${interest} 동작 전후로 몸이 어떻게 달라지는지 관찰해봅니다.`),
+        makeNext(`${interest}의 세계 문화`, `${interest}가 어느 나라에서 인기 있고, 어떤 역사를 가졌는지 알아봅니다.`, `세계지도에서 ${interest}가 유명한 나라를 찾아봅니다.`),
+        makeNext(`나만의 ${interest} 팀 만들기`, `${interest}를 하는 나만의 팀과 규칙을 만들어봅니다.`, "팀 이름, 유니폼, 규칙을 정해 카드로 만들어봅니다.")
+      ],
+      space: interest => [
+        makeNext(`${interest}와 우주 탐사`, `${interest}를 시작으로 더 넓은 우주를 탐사해봅니다.`, `${interest}와 관련된 우주 탐사선이나 관측 사진을 찾아봅니다.`),
+        makeNext("중력과 행성 이야기", `${interest} 주변의 중력과 움직임을 알아봅니다.`, "공을 던지거나 굴려 중력을 몸으로 느껴봅니다."),
+        makeNext(`별자리와 ${interest}`, `${interest}와 관련된 별자리나 신화 이야기를 찾아봅니다.`, "밤하늘 별자리를 그림으로 그리고 이야기를 지어봅니다."),
+        makeNext("나만의 우주 기지 만들기", `${interest}를 탐험할 수 있는 우주 기지를 상상해봅니다.`, "종이 상자나 블록으로 우주 기지를 만들어봅니다.")
+      ],
+      weather: interest => [
+        makeNext(`${interest}와 지구 과학`, `${interest}가 생기는 원리를 지구과학으로 알아봅니다.`, `${interest}가 생기는 과정을 그림으로 순서대로 그려봅니다.`),
+        makeNext(`${interest}는 왜 생길까?`, `${interest}가 만들어지는 이유와 조건을 살펴봅니다.`, "물, 온도, 바람과 관련된 간단한 관찰을 해봅니다."),
+        makeNext(`계절과 ${interest}`, `${interest}가 계절에 따라 어떻게 달라지는지 알아봅니다.`, "계절별 날씨를 그림 달력으로 정리해봅니다."),
+        makeNext("나만의 날씨 관측 일지", `${interest}를 포함한 날씨를 며칠 동안 관찰하고 기록합니다.`, "날씨 그림 일지를 만들어 매일 기록해봅니다.")
+      ],
+      food: interest => [
+        makeNext(`${interest} 속 과학`, `${interest}를 만들거나 요리할 때 숨어 있는 과학을 알아봅니다.`, `${interest}가 만들어지는 과정을 그림이나 사진으로 찾아봅니다.`),
+        makeNext(`${interest}는 어디에서 올까?`, `${interest}의 재료가 어디에서 오는지 농업과 연결해봅니다.`, `${interest}의 재료를 키우는 곳을 지도에서 찾아봅니다.`),
+        makeNext(`세계의 ${interest} 문화`, `${interest}가 나라마다 어떻게 다른지 비교해봅니다.`, "다른 나라의 비슷한 음식을 사진으로 찾아 비교해봅니다."),
+        makeNext(`나만의 ${interest} 레시피 만들기`, `${interest}로 나만의 레시피나 메뉴를 만들어봅니다.`, "재료와 순서를 정해 레시피 카드를 만들어봅니다.")
+      ],
+      story: interest => [
+        makeNext(`${interest}의 상상 세계`, `${interest}가 사는 상상 속 세계를 탐험해봅니다.`, `${interest}가 사는 세상을 그림 지도로 그려봅니다.`),
+        makeNext(`${interest} 캐릭터 만들기`, `${interest}만의 성격과 특징을 가진 캐릭터를 만들어봅니다.`, "이름, 성격, 특별한 능력을 정해 캐릭터 카드를 만들어봅니다."),
+        makeNext(`${interest} 이야기 구조`, `${interest}가 등장하는 이야기가 어떻게 시작되고 끝나는지 살펴봅니다.`, "처음-중간-끝이 있는 짧은 이야기를 만들어봅니다."),
+        makeNext(`${interest} 연극으로 표현하기`, `${interest} 이야기를 몸짓과 대사로 표현해봅니다.`, "가족과 함께 짧은 역할극을 해봅니다.")
+      ]
+    };
+
+    function buildGenericNext(interest) {
+      const category = detectCategory(interest);
+      if (category) {
+        return categoryNextBuilders[category](interest);
+      }
+
+      return [
+        makeNext(`${interest}와 과학`, `${interest} 안에 숨어 있는 원리나 움직임을 알아봅니다.`, "간단한 관찰이나 비교 실험을 해봅니다."),
+        makeNext(`${interest}와 생활`, `${interest}가 우리 생활 속 어디에 있는지 찾아봅니다.`, "집, 길, 여행, 가족 경험과 연결해봅니다."),
+        makeNext(`${interest}와 만들기`, `${interest}를 그림, 카드, 미니북, 모형으로 표현합니다.`, "아이가 고른 방식으로 결과물을 만들어봅니다."),
+        makeNext(`${interest}와 이야기`, `${interest}를 주인공으로 나만의 이야기를 만듭니다.`, "등장인물, 장소, 사건을 정해 짧은 이야기를 만들어봅니다.")
+      ];
+    }
+
     function createGenericProject(interest, age) {
       const base = {
         "4": {
@@ -473,12 +560,7 @@
         analysis: base[age].analysis,
         question: base[age].question,
         steps: base[age].steps,
-        next: [
-          makeNext(`${interest}와 과학`, `${interest} 안에 숨어 있는 원리나 움직임을 알아봅니다.`, "간단한 관찰이나 비교 실험을 해봅니다."),
-          makeNext(`${interest}와 생활`, `${interest}가 우리 생활 속 어디에 있는지 찾아봅니다.`, "집, 길, 여행, 가족 경험과 연결해봅니다."),
-          makeNext(`${interest}와 만들기`, `${interest}를 그림, 카드, 미니북, 모형으로 표현합니다.`, "아이가 고른 방식으로 결과물을 만들어봅니다."),
-          makeNext(`${interest}와 이야기`, `${interest}를 주인공으로 나만의 이야기를 만듭니다.`, "등장인물, 장소, 사건을 정해 짧은 이야기를 만들어봅니다.")
-        ]
+        next: buildGenericNext(interest)
       };
     }
 
