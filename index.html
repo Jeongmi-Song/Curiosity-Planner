@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curiosity Journey</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f6fa;
+      color: #1f2937;
+    }
+
+    .app {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    .hero, .input-card, .loading-card, .result-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      background: #eef2ff;
+      color: #4f46e5;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    h1 { margin: 0 0 12px; font-size: 34px; }
+    h2 { margin: 0 0 14px; font-size: 21px; }
+
+    p {
+      line-height: 1.75;
+      color: #4b5563;
+      margin: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      font-size: 18px;
+      outline: none;
+      margin-bottom: 14px;
+    }
+
+    input:focus { border-color: #6366f1; }
+
+    .tags, .age-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    button { font-family: inherit; }
+
+    .tag, .age-btn {
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 9px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .tag:hover, .age-btn:hover {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .age-btn.active {
+      background: #4f46e5;
+      color: white;
+      border-color: #4f46e5;
+    }
+
+    .small-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #374151;
+      margin: 4px 0 10px;
+    }
+
+    .main-button, .reset-button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .main-button { background: #4f46e5; color: white; }
+    .main-button:disabled { background: #9ca3af; cursor: not-allowed; }
+
+    .reset-button {
+      background: #111827;
+      color: white;
+      margin-top: 6px;
+    }
+
+    .loading-card, .result-area { display: none; }
+
+    .loading-card {
+      line-height: 2;
+      color: #4b5563;
+    }
+
+    .loading-title {
+      font-size: 19px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .age-note {
+      background: #eef2ff;
+      color: #3730a3;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .journey-grid, .keyword-grid, .fusion-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stage-card, .keyword-card, .fusion-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 16px;
+      line-height: 1.65;
+    }
+
+    .stage-title, .keyword-word, .fusion-title {
+      display: block;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .box {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+
+    .mini-label {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 900;
+      color: #4f46e5;
+      margin-right: 4px;
+    }
+
+    ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+      color: #374151;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 520px) {
+      .app { padding: 20px 14px 50px; }
+      h1 { font-size: 28px; }
+      .hero, .input-card, .loading-card, .result-card { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="badge">MVP Demo</div>
+      <h1>Curiosity Journey</h1>
+      <p>
+        아이의 관심사와 나이대를 입력하면<br />
+        🌱 발견하기 → 🔍 탐험하기 → 🚀 창조하기 단계로 성장 여정을 만들어드려요.
+      </p>
+    </section>
+
+    <section class="input-card">
+      <label for="interestInput">아이의 관심사를 입력하세요.</label>
+      <input id="interestInput" type="text" placeholder="예: 전기차, 곤충, 하키, 우주" />
+
+      <div class="tags">
+        <button class="tag" type="button">전기차</button>
+        <button class="tag" type="button">자동차</button>
+        <button class="tag" type="button">곤충</button>
+        <button class="tag" type="button">공룡</button>
+        <button class="tag" type="button">우주</button>
+        <button class="tag" type="button">하키</button>
+      </div>
+
+      <p class="small-title">아이의 나이대를 선택하세요.</p>
+      <div class="age-options">
+        <button class="age-btn active" type="button" data-age="4">4세</button>
+        <button class="age-btn" type="button" data-age="5-6">5~6세</button>
+        <button class="age-btn" type="button" data-age="7">7세</button>
+        <button class="age-btn" type="button" data-age="8-10">8~10세</button>
+      </div>
+
+      <button id="createButton" class="main-button" type="button">
+        성장 여정 만들기
+      </button>
+    </section>
+
+    <section id="loadingCard" class="loading-card">
+      <div class="loading-title">아이 맞춤 성장 여정을 만드는 중입니다...</div>
+      🧠 관심사 분석 중...<br />
+      🧺 준비물 구성 중...<br />
+      💬 하브루타 질문 설계 중...<br />
+      🌍 융합 확장 탐구 주제 연결 중...
+    </section>
+
+    <section id="resultArea" class="result-area">
+      <div id="ageNote" class="age-note"></div>
+
+      <div class="result-card">
+        <h2>🧠 관심사 분석</h2>
+        <p id="analysisText"></p>
+      </div>
+
+      <div class="result-card">
+        <h2>🌱🔍🚀 3단계 성장 여정</h2>
+        <div id="journeyArea" class="journey-grid"></div>
+      </div>
+
+      <div class="result-card">
+        <h2>🇬🇧 영어 키워드</h2>
+        <div id="englishKeywords" class="keyword-grid"></div>
+      </div>
+
+      <div class="result-card">
+        <h2>🌍 융합 확장 탐구 주제</h2>
+        <div id="fusionTopics" class="fusion-grid"></div>
+      </div>
+
+      <button id="resetButton" class="reset-button" type="button">다시 만들기</button>
+      <p class="footer-note">같은 관심사도 나이대와 발달 수준에 따라 다르게 확장할 수 있어요.</p>
+    </section>
+  </main>
+
+  <script>
+    let selectedAge = "4";
+
+    const ageMessages = {
+      "4": "4세용: 감각놀이, 색, 소리, 몸동작, 역할놀이 중심입니다.",
+      "5-6": "5~6세용: 관찰, 분류, 비교, 그림 기록, 간단한 만들기 중심입니다.",
+      "7": "7세용: 질문 만들기, 비교표, 원리 궁금증, 미니북, 발표 중심입니다.",
+      "8-10": "8~10세용: 조사, 데이터, 사회문제, 해결 아이디어, 발표자료 중심입니다."
+    };
+
+    function makeStage(title, goal, materials, activities, questions, parentTip) {
+      return { title, goal, materials, activities, questions, parentTip };
+    }
+
+    function createGenericProject(interest, age) {
+      const templates = {
+        "4": {
+          analysis: `4세 아이에게 ${interest}는 지식으로 배우기보다 색, 소리, 움직임, 촉감으로 먼저 느끼는 놀이 주제입니다. 짧게 보고, 따라 하고, 말해보는 경험이 가장 잘 맞습니다.`,
+          journey: [
+            makeStage("🌱 1단계 발견하기", `${interest}를 감각으로 만나는 단계`, "사진, 장난감, 색연필, 작은 바구니", [
+              `${interest}와 관련된 색깔 찾아보기`,
+              `${interest}가 낼 것 같은 소리 흉내내기`,
+              `${interest}처럼 몸으로 움직여보기`,
+              `집 안에서 ${interest}와 비슷한 모양 찾아보기`
+            ], [
+              `이건 무슨 색이야?`,
+              `어떤 소리가 날 것 같아?`,
+              `크게 움직일까, 작게 움직일까?`
+            ], "4세는 설명보다 감각 경험이 먼저입니다. 아이가 말한 단어를 그대로 반복해 주세요."),
+            makeStage("🔍 2단계 탐험하기", `${interest}의 차이를 느끼는 단계`, "큰 사진 2장, 장난감 2개, 비교 바구니", [
+              `큰 것과 작은 것 나누기`,
+              `빠른 것과 느린 것 몸으로 표현하기`,
+              `좋아하는 것 하나 고르기`,
+              `왜 좋은지 한 단어로 말하기`
+            ], [
+              `어느 것이 더 커?`,
+              `어느 것이 더 빨라 보여?`,
+              `왜 이게 더 좋아?`
+            ], "비교는 말로 길게 설명하지 않아도 됩니다. 고르고 가리키고 몸으로 표현하는 것도 충분합니다."),
+            makeStage("🚀 3단계 창조하기", `나만의 ${interest}를 놀이로 표현하는 단계`, "큰 종이, 크레파스, 블록, 스티커", [
+              `${interest} 그림 자유롭게 그리기`,
+              `${interest} 이름 지어주기`,
+              `${interest} 역할놀이 하기`,
+              `가족에게 “내가 만든 거야”라고 보여주기`
+            ], [
+              `이름이 뭐야?`,
+              `어디로 가고 있어?`,
+              `누구랑 같이 놀고 싶어?`
+            ], "완성도보다 아이의 상상 말을 기록해 주는 것이 결과물입니다.")
+          ],
+          english: [
+            { word: "Big", sentence: "Big means large." },
+            { word: "Small", sentence: "Small means little." },
+            { word: "Move", sentence: "Move means to go." },
+            { word: "Sound", sentence: "Sound is what we hear." },
+            { word: "Like", sentence: "Like means you enjoy something." }
+          ],
+          fusion: [
+            { title: "오감 + 놀이", detail: `${interest}를 색, 소리, 움직임으로 느끼는 놀이를 해요.` },
+            { title: "미술 + 표현", detail: `정확히 그리기보다 ${interest}에서 느낀 색과 모양을 자유롭게 표현해요.` },
+            { title: "몸놀이 + 언어", detail: `${interest}처럼 움직이고 “커요, 작아요, 빨라요”처럼 짧게 말해요.` },
+            { title: "생활 관찰", detail: `집이나 길에서 ${interest}와 비슷한 것을 찾아보며 연결해요.` }
+          ]
+        },
+
+        "5-6": {
+          analysis: `5~6세 아이에게 ${interest}는 관찰하고, 나누고, 간단히 설명하는 힘을 키우는 주제입니다. 이 나이대는 “봤다”에서 “무엇이 같고 다른가?”로 넘어가는 시기입니다.`,
+          journey: [
+            makeStage("🌱 1단계 발견하기", `${interest}의 특징을 찾아보는 단계`, "사진 자료, 관찰 종이, 색연필", [
+              `${interest} 사진을 보고 색, 모양, 크기 말하기`,
+              `${interest}와 관련된 단어 3개 찾기`,
+              `좋아하는 ${interest} 하나 고르기`,
+              `그 이유를 한 문장으로 말하기`
+            ], [
+              `무엇이 가장 먼저 보여?`,
+              `어떤 모양이야?`,
+              `왜 이게 마음에 들어?`
+            ], "5~6세는 관찰한 것을 말로 꺼내는 연습이 중요합니다."),
+            makeStage("🔍 2단계 탐험하기", `${interest}를 분류하고 비교하는 단계`, "비교표, 스티커, 작은 카드", [
+              `${interest}를 두 그룹으로 나누기`,
+              `같은 점과 다른 점 찾기`,
+              `내가 정한 기준 설명하기`,
+              `스티커로 분류표 완성하기`
+            ], [
+              `왜 이렇게 나누었어?`,
+              `두 가지는 무엇이 같아?`,
+              `무엇이 가장 달라?`
+            ], "부모가 기준을 정해주기보다 아이가 직접 기준을 만들게 해보세요."),
+            makeStage("🚀 3단계 창조하기", `${interest}를 작은 작품으로 정리하는 단계`, "종이, 색연필, 풀, 가위, 스티커", [
+              `${interest} 관찰 노트 만들기`,
+              `${interest} 질문 카드 만들기`,
+              `${interest} 작은 모형 만들기`,
+              `가족에게 작품을 보여주며 설명하기`
+            ], [
+              `네 작품에서 가장 중요한 부분은 뭐야?`,
+              `사람들이 이걸 보면 무엇을 알 수 있을까?`,
+              `다음에는 무엇을 더 만들어보고 싶어?`
+            ], "긴 글쓰기보다 그림, 단어, 짧은 설명이면 충분합니다.")
+          ],
+          english: [
+            { word: "Shape", sentence: "Shape means how something looks." },
+            { word: "Same", sentence: "Same means not different." },
+            { word: "Different", sentence: "Different means not the same." },
+            { word: "Group", sentence: "Group means to put things together." },
+            { word: "Why", sentence: "Why asks about a reason." }
+          ],
+          fusion: [
+            { title: "수학 + 분류", detail: `${interest}를 색, 크기, 모양 기준으로 나누고 개수를 세어봐요.` },
+            { title: "미술 + 관찰기록", detail: `${interest}를 그림으로 그리고 특징 단어를 붙여요.` },
+            { title: "언어 + 설명", detail: `“이것은 ~이에요. 왜냐하면 ~ 때문이에요.” 문장으로 말해요.` },
+            { title: "과학 + 비교", detail: `${interest}와 비슷한 대상을 골라 같은 점과 다른 점을 찾아요.` }
+          ]
+        },
+
+        "7": {
+          analysis: `7세 아이에게 ${interest}는 관찰에서 한 단계 나아가 질문 만들기, 비교하기, 간단한 원리 이해, 발표로 확장할 수 있는 주제입니다. 이제 아이의 생각을 구조화하는 경험이 중요합니다.`,
+          journey: [
+            makeStage("🌱 1단계 발견하기", `${interest}에 대해 아는 것과 궁금한 것을 나누는 단계`, "A4 종이, 연필, 사진 3장", [
+              `${interest} 마인드맵 만들기`,
+              `이미 아는 것 3가지 적기`,
+              `궁금한 것 3가지 적기`,
+              `${interest} 관련 키워드 모으기`
+            ], [
+              `너는 이미 무엇을 알고 있어?`,
+              `그중에서 가장 확실한 것은 뭐야?`,
+              `가장 궁금한 질문은 뭐야?`
+            ], "7세는 자기 생각을 밖으로 꺼내 정리하는 경험이 중요합니다."),
+            makeStage("🔍 2단계 탐험하기", `${interest}를 비교하고 이유를 생각하는 단계`, "비교표, 질문 카드, 색펜", [
+              `${interest}와 비슷한 대상 비교하기`,
+              `공통점과 차이점 표 만들기`,
+              `왜 그런 차이가 생겼는지 생각하기`,
+              `가장 좋은 질문 하나 고르기`
+            ], [
+              `두 대상은 무엇이 같고 무엇이 다를까?`,
+              `왜 그런 차이가 생겼을까?`,
+              `만약 조건이 바뀌면 어떻게 될까?`
+            ], "하브루타처럼 질문의 이유를 묻는 대화를 시작하기 좋은 단계입니다."),
+            makeStage("🚀 3단계 창조하기", `${interest}를 내 생각이 담긴 결과물로 만드는 단계`, "미니북 종이, 색연필, 발표 카드", [
+              `${interest} 미니북 만들기`,
+              `비교표와 질문을 책 안에 넣기`,
+              `내 생각 한 문장 쓰기`,
+              `가족 앞에서 1분 발표하기`
+            ], [
+              `네가 가장 중요하다고 생각한 것은 뭐야?`,
+              `왜 그 생각을 하게 되었어?`,
+              `다른 사람에게 꼭 알려주고 싶은 것은 뭐야?`
+            ], "발표의 목적은 정답 말하기가 아니라 내 생각을 설명하는 경험입니다.")
+          ],
+          english: [
+            { word: "Observe", sentence: "To observe means to look carefully." },
+            { word: "Compare", sentence: "To compare means to find what is the same and different." },
+            { word: "Question", sentence: "A question helps us learn more." },
+            { word: "Reason", sentence: "A reason explains why something happens." },
+            { word: "Present", sentence: "To present means to show and explain your idea." }
+          ],
+          fusion: [
+            { title: "과학 + 원리", detail: `${interest}가 어떻게 움직이고 작동하는지 간단한 원리를 찾아봐요.` },
+            { title: "수학 + 표 정리", detail: `관찰한 내용을 표로 정리하고 가장 많은 것, 가장 적은 것을 찾아요.` },
+            { title: "언어 + 발표", detail: `${interest}에 대해 1분 발표문을 만들어 말해요.` },
+            { title: "디자인 + 문제해결", detail: `${interest}를 더 좋게 바꾸는 아이디어를 그림으로 표현해요.` }
+          ]
+        },
+
+        "8-10": {
+          analysis: `8~10세 아이에게 ${interest}는 조사, 분석, 사회적 연결, 문제 해결, 창작 발표로 확장할 수 있는 깊이 있는 탐구 주제입니다. 단순한 흥미를 자기 의견과 프로젝트로 발전시키는 것이 핵심입니다.`,
+          journey: [
+            makeStage("🌱 1단계 발견하기", `${interest}에 대한 탐구 질문을 세우는 단계`, "노트, 검색 자료, 키워드 카드", [
+              `${interest}에 대한 질문 5개 만들기`,
+              `가장 탐구하고 싶은 질문 1개 고르기`,
+              `관련 키워드 5개 조사하기`,
+              `기본 개념을 세 문장으로 정리하기`
+            ], [
+              `이 주제에서 가장 중요한 질문은 무엇일까?`,
+              `왜 그 질문이 중요하다고 생각해?`,
+              `이미 아는 것과 모르는 것은 어떻게 다를까?`
+            ], "이 나이대는 질문의 수준이 탐구의 깊이를 결정합니다."),
+            makeStage("🔍 2단계 탐험하기", `${interest}의 원리, 영향, 문제를 분석하는 단계`, "조사표, 포스트잇, 비교 자료", [
+              `${interest}의 구조나 원리 조사하기`,
+              `${interest}와 관련된 문제 찾기`,
+              `원인과 결과를 나누어 정리하기`,
+              `다른 사례와 비교하기`
+            ], [
+              `이 문제는 왜 생겼을까?`,
+              `누구에게 좋은 점과 불편한 점이 있을까?`,
+              `다른 해결 방법은 없을까?`
+            ], "정답보다 관점이 중요합니다. 과학, 사회, 환경, 기술 관점으로 나누어 보게 하세요."),
+            makeStage("🚀 3단계 창조하기", `${interest}를 해결 아이디어나 발표 프로젝트로 만드는 단계`, "큰 종이, 발표 슬라이드 초안, 색펜", [
+              `해결 아이디어 3개 만들기`,
+              `가장 좋은 아이디어 하나 선택하기`,
+              `근거와 예상 효과 정리하기`,
+              `3분 발표 포스터 또는 슬라이드 만들기`
+            ], [
+              `네 아이디어는 어떤 문제를 해결해?`,
+              `그 아이디어가 실제로 가능하려면 무엇이 필요할까?`,
+              `반대 의견이 있다면 어떻게 답할 수 있을까?`
+            ], "8~10세는 반대 의견까지 생각해보면 사고의 깊이가 확 올라갑니다.")
+          ],
+          english: [
+            { word: "Research", sentence: "Research means to study something to learn more." },
+            { word: "Analyze", sentence: "To analyze means to look at parts carefully." },
+            { word: "Impact", sentence: "Impact means an effect or change." },
+            { word: "Solution", sentence: "A solution is a way to fix a problem." },
+            { word: "Evidence", sentence: "Evidence is information that supports an idea." }
+          ],
+          fusion: [
+            { title: "과학 + 기술", detail: `${interest}에 숨어 있는 원리나 기술을 조사하고 그림으로 설명해요.` },
+            { title: "사회 + 영향", detail: `${interest}가 사람, 도시, 환경에 어떤 영향을 주는지 장단점으로 정리해요.` },
+            { title: "수학 + 데이터", detail: `${interest}와 관련된 숫자나 빈도를 조사해 표나 그래프로 표현해요.` },
+            { title: "미디어 + 설득", detail: `${interest}에 대한 내 의견을 광고, 포스터, 발표, 영상으로 만들어 설득해요.` }
+          ]
+        }
+      };
+
+      return templates[age];
+    }
+
+    function getProjectData(interest, age) {
+      return createGenericProject(interest, age);
+    }
+
+    const interestInput = document.getElementById("interestInput");
+    const createButton = document.getElementById("createButton");
+    const loadingCard = document.getElementById("loadingCard");
+    const resultArea = document.getElementById("resultArea");
+    const resetButton = document.getElementById("resetButton");
+
+    document.querySelectorAll(".tag").forEach(tag => {
+      tag.addEventListener("click", () => {
+        interestInput.value = tag.textContent;
+      });
+    });
+
+    document.querySelectorAll(".age-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".age-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedAge = btn.dataset.age;
+      });
+    });
+
+    createButton.addEventListener("click", () => {
+      const interest = interestInput.value.trim();
+
+      if (!interest) {
+        alert("아이의 관심사를 하나 입력해주세요.");
+        return;
+      }
+
+      createButton.disabled = true;
+      createButton.textContent = "만드는 중...";
+      resultArea.style.display = "none";
+      loadingCard.style.display = "block";
+
+      setTimeout(() => {
+        const data = getProjectData(interest, selectedAge);
+        renderResult(data, selectedAge);
+
+        loadingCard.style.display = "none";
+        resultArea.style.display = "block";
+        createButton.disabled = false;
+        createButton.textContent = "성장 여정 만들기";
+      }, 900);
+    });
+
+    resetButton.addEventListener("click", () => {
+      resultArea.style.display = "none";
+      interestInput.value = "";
+      interestInput.focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    function renderResult(data, age) {
+      document.getElementById("ageNote").textContent = ageMessages[age];
+      document.getElementById("analysisText").textContent = data.analysis;
+      renderJourney(data.journey);
+      renderEnglish(data.english);
+      renderFusion(data.fusion);
+    }
+
+    function renderJourney(items) {
+      const container = document.getElementById("journeyArea");
+      container.innerHTML = "";
+
+      items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "stage-card";
+
+        div.innerHTML = `
+          <span class="stage-title">${item.title}</span>
+
+          <div class="box">
+            <span class="mini-label">목표</span>${item.goal}
+          </div>
+
+          <div class="box">
+            <span class="mini-label">준비물</span>${item.materials}
+          </div>
+
+          <div class="box">
+            <span class="mini-label">활동 예시</span>
+            <ul>${item.activities.map(a => `<li>${a}</li>`).join("")}</ul>
+          </div>
+
+          <div class="box">
+            <span class="mini-label">하브루타 질문</span>
+            <ul>${item.questions.map(q => `<li>${q}</li>`).join("")}</ul>
+          </div>
+
+          <div class="box">
+            <span class="mini-label">부모 Tip</span>${item.parentTip}
+          </div>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    function renderEnglish(items) {
+      const container = document.getElementById("englishKeywords");
+      container.innerHTML = "";
+
+      items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "keyword-card";
+        div.innerHTML = `
+          <span class="keyword-word">${item.word}</span>
+          ${item.sentence}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderFusion(items) {
+      const container = document.getElementById("fusionTopics");
+      container.innerHTML = "";
+
+      items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "fusion-card";
+        div.innerHTML = `
+          <span class="fusion-title">${item.title}</span>
+          ${item.detail}
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
